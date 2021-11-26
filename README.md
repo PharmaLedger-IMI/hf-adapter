@@ -1,4 +1,4 @@
-# Hyperledger Adapter
+# Hyperledger Fabric Adapter
 
 ## Folder structure
 
