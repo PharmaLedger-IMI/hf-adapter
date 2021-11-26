@@ -1,0 +1,49 @@
+{
+    "name": "anchoring",
+    "version": "1.0.0",
+    "client": {
+        "organization": "${ORG_NAME}",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "${ORG_NAME}": {
+            "mspid": "${ORG_NAME}MSP",
+            "peers": [
+                "${ORG}-peer1"
+            ],
+            "certificateAuthorities": [
+                "${ORG}-ecert-ca"
+            ]
+        }
+    },
+    "peers": {
+        "${ORG}-peer1": {
+            "url": "grpcs://${ORG}-peer1:7051",
+            "tlsCACerts": {
+                "pem": "${PEERPEM}"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "${ORG}-peer1",
+                "hostnameOverride": "${ORG}-peer1"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "${ORG}-ecert-ca": {
+            "url": "https://${ORG}-ecert-ca:443",
+            "caName": "${ORG}-ecert-ca",
+            "tlsCACerts": {
+                "pem": ["${CAPEM}"]
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}

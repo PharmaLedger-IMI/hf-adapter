@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rms-ecert-ca
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rms-ecert-ca
+  template:
+    metadata:
+      labels:
+        app: rms-ecert-ca
+    spec:
+      nodeSelector:
+        cl: hyperledger
+      containers:
+        - name: main
+          image: {{FABRIC_CONTAINER_REGISTRY}}/fabric-ca:{{FABRIC_CA_VERSION}}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: FABRIC_CA_SERVER_CA_NAME
+              value: "rms-ecert-ca"
+            - name: FABRIC_CA_SERVER_DEBUG
+              value: "false"
+            - name: FABRIC_CA_SERVER_HOME
+              value: "/var/hyperledger/fabric-ca-server"
+            - name: FABRIC_CA_SERVER_TLS_CERTFILE
+              value: "/var/hyperledger/fabric-ca-client/tls-ca/rcaadmin/msp/signcerts/cert.pem"
+            - name: FABRIC_CA_SERVER_TLS_KEYFILE
+              value: "/var/hyperledger/fabric-ca-client/tls-ca/rcaadmin/msp/keystore/key.pem"
+            - name: FABRIC_CA_CLIENT_HOME
+              value: "/var/hyperledger/fabric-ca-client"
+          ports:
+            - containerPort: 443
+          volumeMounts:
+            - name: fabric-volume
+              mountPath: /var/hyperledger
+            - name: fabric-config
+              mountPath: /var/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+              subPath: fabric-ecert-ca-server-config.yaml
+          readinessProbe:
+            tcpSocket:
+              port: 443
+            initialDelaySeconds: 2
+            periodSeconds: 5
+      volumes:
+        - name: fabric-volume
+          persistentVolumeClaim:
+            claimName: fabric-rms
+        - name: fabric-config
+          configMap:
+            name: rms-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rms-ecert-ca
+spec:
+  ports:
+    - name: tls
+      port: 443
+      protocol: TCP
+  selector:
+    app: rms-ecert-ca

@@ -1,0 +1,101 @@
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rms-peer1-config
+data:
+  FABRIC_CFG_PATH: /var/hyperledger/fabric/config
+  FABRIC_LOGGING_SPEC: "debug:cauthdsl,policies,msp,grpc,peer.gossip.mcs,gossip,leveldbhelper=info"
+  CORE_PEER_TLS_ENABLED: "true"
+  CORE_PEER_TLS_CERT_FILE: /var/hyperledger/fabric/organizations/peerOrganizations/rms.pharma.com/peers/rms-peer1.rms.pharma.com/tls/signcerts/cert.pem
+  CORE_PEER_TLS_KEY_FILE: /var/hyperledger/fabric/organizations/peerOrganizations/rms.pharma.com/peers/rms-peer1.rms.pharma.com/tls/keystore/server.key
+  CORE_PEER_TLS_ROOTCERT_FILE: /var/hyperledger/fabric/organizations/peerOrganizations/rms.pharma.com/peers/rms-peer1.rms.pharma.com/tls/cacerts/rms-tls-ca.pem
+  CORE_PEER_ID: rms-peer1.rms.pharma.com
+  CORE_PEER_ADDRESS: rms-peer1:7051
+  CORE_PEER_LISTENADDRESS: 0.0.0.0:7051
+  CORE_PEER_CHAINCODEADDRESS: rms-peer1:7052
+  CORE_PEER_CHAINCODELISTENADDRESS: 0.0.0.0:7052
+  # bootstrap peer is the other peer in the same org
+  CORE_PEER_GOSSIP_BOOTSTRAP: rms-peer2:7051
+  CORE_PEER_GOSSIP_EXTERNALENDPOINT: rms-peer1:7051
+  CORE_PEER_LOCALMSPID: RmsMSP
+  CORE_PEER_MSPCONFIGPATH: /var/hyperledger/fabric/organizations/peerOrganizations/rms.pharma.com/peers/rms-peer1.rms.pharma.com/msp
+  CORE_OPERATIONS_LISTENADDRESS: 0.0.0.0:9443
+  CORE_PEER_FILESYSTEMPATH: /var/hyperledger/fabric/data/rms-peer1.rms.pharma.com
+  CORE_LEDGER_SNAPSHOTS_ROOTDIR: /var/hyperledger/fabric/data/rms-peer1.rms.pharma.com/snapshots
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rms-peer1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rms-peer1
+  template:
+    metadata:
+      labels:
+        app: rms-peer1
+    spec:
+      nodeSelector:
+        cl: hyperledger
+      containers:
+        - name: main
+          image: {{FABRIC_CONTAINER_REGISTRY}}/fabric-peer:{{FABRIC_VERSION}}
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: rms-peer1-config
+          ports:
+            - containerPort: 7051
+            - containerPort: 7052
+            - containerPort: 9443
+          volumeMounts:
+            - name: fabric-volume
+              mountPath: /var/hyperledger
+            - name: fabric-config
+              mountPath: /var/hyperledger/fabric/config
+            - name: ccs-builder
+              mountPath: /var/hyperledger/fabric/chaincode/ccs-builder/bin
+
+      # load the external chaincode builder into the peer image prior to peer launch.
+      initContainers:
+        - name: fabric-ccs-builder
+          image: public.ecr.aws/n4q1q0z2/iot:fabric-ccs-build.1.0
+          imagePullPolicy: IfNotPresent
+          command: [sh, -c]
+          args: ["cp /go/bin/* /var/hyperledger/fabric/chaincode/ccs-builder/bin/"]
+          volumeMounts:
+            - name: ccs-builder
+              mountPath: /var/hyperledger/fabric/chaincode/ccs-builder/bin
+
+      volumes:
+        - name: fabric-volume
+          persistentVolumeClaim:
+            claimName: fabric-rms
+        - name: fabric-config
+          configMap:
+            name: rms-config
+        - name: ccs-builder
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rms-peer1
+spec:
+  ports:
+    - name: gossip
+      port: 7051
+      protocol: TCP
+    - name: chaincode
+      port: 7052
+      protocol: TCP
+    - name: operations
+      port: 9443
+      protocol: TCP
+  selector:
+    app: rms-peer1

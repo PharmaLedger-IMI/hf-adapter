@@ -1,0 +1,20 @@
+{
+    "name": "hlf-adapter",
+    "version": "1.0.0",
+    "description": "hlfAdapter",
+    "engines": {
+        "node": ">=12",
+        "npm": ">=5"
+    },
+    "scripts": {
+        "start": "node webserver.js"
+    },
+    "engineStrict": true,
+    "author": "",
+    "license": "",
+    "dependencies": {
+        "express": "^4.17.1",
+        "fabric-ca-client": "^2.2.4",
+        "fabric-network": "^2.2.4"
+    }
+}

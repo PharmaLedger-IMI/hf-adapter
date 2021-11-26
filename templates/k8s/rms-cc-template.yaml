@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rms-cc-{{CHAINCODE_NAME}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rms-cc-{{CHAINCODE_NAME}}
+  template:
+    metadata:
+      labels:
+        app: rms-cc-{{CHAINCODE_NAME}}
+    spec:
+      nodeSelector:
+       cl: hyperledger
+      containers:
+        - name: main
+          image: {{CHAINCODE_IMAGE}}
+          imagePullPolicy: Always
+          env:
+            - name: CHAINCODE_SERVER_ADDRESS
+              value: 0.0.0.0:9999
+            - name: CHAINCODE_ID
+              valueFrom:
+                configMapKeyRef:
+                  key: CHAINCODE_ID
+                  name: rms-cc-{{CHAINCODE_NAME}}
+          ports:
+            - containerPort: 9999
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rms-cc-{{CHAINCODE_NAME}}
+spec:
+  ports:
+    - name: chaincode
+      port: 9999
+      protocol: TCP
+  selector:
+    app: rms-cc-{{CHAINCODE_NAME}}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rms-cc-{{CHAINCODE_NAME}}
+data:
+  CHAINCODE_ID : {{CHAINCODE_ID}}

@@ -1,0 +1,30 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-scrub-fabric-volumes
+spec:
+  backoffLimit: 0
+  completions: 1
+  template:
+    metadata:
+      name: job-scrub-fabric-volumes
+    spec:
+      nodeSelector:
+        cl: hyperledger
+      restartPolicy: "Never"
+      containers:
+        - name: main
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - "rm -rvf /mnt/fabric-*/*"
+          volumeMounts:
+            - name: fabric-rms-volume
+              mountPath: /mnt/fabric-rms
+      volumes:
+        - name: fabric-rms-volume
+          persistentVolumeClaim:
+            claimName: fabric-rms
+
