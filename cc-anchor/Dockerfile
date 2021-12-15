@@ -6,10 +6,10 @@ ENV TARGET_FOLDER_NAME="cc-anchor"
 RUN mkdir -p $TARGET_FOLDER_NAME
 WORKDIR $TARGET_FOLDER_NAME
 COPY . .
-RUN npm install --unsafe-perm
+RUN npm install --unsafe-perm --production
 
 
-RUN echo 'node index.js' >> startup-script.sh
+RUN echo 'node ./lib/index.js' >> startup-script.sh
 RUN cat startup-script.sh
 
 EXPOSE 9999/tcp

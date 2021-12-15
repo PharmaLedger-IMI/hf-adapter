@@ -1,5 +1,6 @@
 # Hyperledger Fabric Adapter
 
+
 ## Folder structure
 
 1. cc-anchor : chaincode for anchoring
@@ -7,6 +8,10 @@
 3. network : hyperledger fabric blockchain network configuration
 4. scripts : deployment, clean scripts
 5. templates : k8s deployment templates
+
+## Prerequisites
+1. Docker up and running
+2. kubectl configured to your working cluster
 
 ## Deployment
 
@@ -23,3 +28,6 @@
 ```shell
 ./scripts/drop-network.sh
 ```
+## External
+
+1. [Hyperledger fabric documentation](https://hyperledger-fabric.readthedocs.io/en/release-2.3/whatis.html#hyperledger-fabric)

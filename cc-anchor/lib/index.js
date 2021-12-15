@@ -1,4 +1,4 @@
 'use strict';
 
-const anchorCC = require('./anchor-cc.js');
+const anchorCC = require('./chaincode/anchor');
 anchorCC.startChainCodeServer();
