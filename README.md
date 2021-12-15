@@ -1,5 +1,6 @@
 # Hyperledger Fabric Adapter
 
+[![SmartContractTests Actions Status](https://github.com/PharmaLedger-IMI/hf-adapter/workflows/SmartContractTests/badge.svg)](https://github.com/PharmaLedger-IMI/hf-adapter/actions)
 
 ## Folder structure
 
