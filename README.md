@@ -1,6 +1,7 @@
 # Hyperledger Fabric Adapter
+[![HLF Adapter Tests](https://github.com/PharmaLedger-IMI/hf-adapter/actions/workflows/HLFAdapterTests.yml/badge.svg)](https://github.com/PharmaLedger-IMI/hf-adapter/actions/workflows/HLFAdapterTests.yml)
+[![Smart Contract Tests](https://github.com/PharmaLedger-IMI/hf-adapter/actions/workflows/SmartContractTests.yml/badge.svg)](https://github.com/PharmaLedger-IMI/hf-adapter/actions/workflows/SmartContractTests.yml)
 
-[![SmartContractTests Actions Status](https://github.com/PharmaLedger-IMI/hf-adapter/workflows/SmartContractTests/badge.svg)](https://github.com/PharmaLedger-IMI/hf-adapter/actions)
 
 ## Folder structure
 
