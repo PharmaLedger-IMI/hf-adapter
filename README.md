@@ -5,8 +5,8 @@
 
 ## Folder structure
 
-1. cc-anchor : chaincode for anchoring
-2. hlf-adapter : hyperledger fabric anchoring adapter
+1. cc-anchor : chaincode for anchoring using the signed hashlinks
+2. hlf-adapter : hyperledger fabric anchoring adapter using the signed hashlinks
 3. network : hyperledger fabric blockchain network configuration
 4. scripts : deployment, clean scripts
 5. templates : k8s deployment templates
