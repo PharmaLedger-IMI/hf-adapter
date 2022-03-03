@@ -41,16 +41,28 @@ function configureHeaders(webServer) {
 
 }
 
-function configureAddAnchorEntryPoints(webServer, anchoringContract) {
-    const addAnchorHandler = require("./controllers/addAnchor").addAnchor(anchoringContract);
-    webServer.use("/addAnchor/*", requestBodyJSONMiddleware);
-    webServer.put("/addAnchor/:keySSI", addAnchorHandler);
+function configureCreateAnchorEntryPoints(webServer, anchoringContract) {
+    const createAnchorHandler = require("./controllers/createAnchor").createAnchor(anchoringContract);
+    webServer.use("/create-anchor/*", requestBodyJSONMiddleware);
+    webServer.put("/create-anchor/:keySSI", createAnchorHandler);
 }
 
-function configureGetAnchorVersionsEntryPoints(webServer, anchoringContract) {
-    const getVersionsHandler = require("./controllers/getAnchorVersions").getAnchorVersions(anchoringContract);
-    webServer.use("/getAnchorVersions/*", requestBodyJSONMiddleware);
-    webServer.get("/getAnchorVersions/:keySSI", getVersionsHandler);
+function configureAppendAnchorEntryPoints(webServer, anchoringContract) {
+    const appendAnchorHandler = require("./controllers/appendAnchor").appendAnchor(anchoringContract);
+    webServer.use("/append-to-anchor/*", requestBodyJSONMiddleware);
+    webServer.put("/append-to-anchor/:keySSI", appendAnchorHandler);
+}
+
+function configureGetAllVersionsEntryPoints(webServer, anchoringContract) {
+    const getAllVersionsHandler = require("./controllers/getAllAnchorVersions").getAllAnchorVersions(anchoringContract);
+    webServer.use("/get-all-versions/*", requestBodyJSONMiddleware);
+    webServer.get("/get-all-versions/:keySSI", getAllVersionsHandler);
+}
+
+function configureGetLastVersionEntryPoints(webServer, anchoringContract) {
+    const getLastVersionHandler = require("./controllers/getLastAnchorVersion").getLastAnchorVersion(anchoringContract);
+    webServer.use("/get-last-version/*", requestBodyJSONMiddleware);
+    webServer.get("/get-last-version/:keySSI", getLastVersionHandler);
 }
 
 function configureCheckEntryPoints(webServer, anchoringContract) {
@@ -64,8 +76,10 @@ function startServer(anchoringContract){
     const port = 3000;
     this.webServer = express();
     configureHeaders(this.webServer);
-    configureAddAnchorEntryPoints(this.webServer, anchoringContract);
-    configureGetAnchorVersionsEntryPoints(this.webServer, anchoringContract);
+    configureCreateAnchorEntryPoints(this.webServer, anchoringContract);
+    configureAppendAnchorEntryPoints(this.webServer, anchoringContract);
+    configureGetAllVersionsEntryPoints(this.webServer, anchoringContract);
+    configureGetLastVersionEntryPoints(this.webServer, anchoringContract);
     configureCheckEntryPoints(this.webServer, anchoringContract);
     this.webServer.listen(port);
     console.log('Server started. Listening on ', port);

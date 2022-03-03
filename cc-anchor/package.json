@@ -4,18 +4,20 @@
   "description": "Chain Code Anchoring",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive",
+    "test": "mocha --extension test.js --recursive",
     "start": "node index.js"
   },
   "author": "",
   "engineStrict": true,
   "license": "ISC",
   "dependencies": {
-    "fabric-shim": "^2.2.2"
+    "fabric-shim": "^2.2.2",
+    "base-x": "^3.0.9"
   },
   "devDependencies": {
     "chai": "^4.3.4",
-    "sinon": "^12.0.1",
-    "mocha": "^8.0.1"
+    "mocha": "^9.2.0",
+    "nyc": "^15.1.0",
+    "sinon": "^12.0.1"
   }
 }

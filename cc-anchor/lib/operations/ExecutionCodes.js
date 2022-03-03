@@ -7,22 +7,21 @@ class ExecutionCodes {
        return 201;
     }
 
-    statusHashLinkOutOfSync() {
-       return 100;
-    }
-
     statusCannotUpdateReadOnlyAnchor() {
        return 101;
-    }
-
-    statusHashOfPublicKeyDoesntMatchControlString(){
-       return 102;
     }
 
     statusSignatureCheckFailed(){
        return 103;
     }
 
+    statusAnchorAlreadyExists(){
+        return 104;
+    }
+
+    statusAnchorDoesNotExists(){
+        return 105;
+    }
 }
 
 module.exports = {

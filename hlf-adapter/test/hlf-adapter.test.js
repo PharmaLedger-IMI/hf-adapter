@@ -16,7 +16,16 @@ describe('HLF-Adapter tests', () =>{
         ccStub = require('../../cc-anchor/test/chaincodeStub')();
         anchoringContractStub.submitTransaction.callsFake( async (method,anchorId, data) => {
             const cc = require('../../cc-anchor/test/anchor');
-            return await cc.addAnchor(ccStub,anchorId,JSON.parse(data));
+            switch(method){
+                case "createAnchor":
+                    return await cc.addAnchor(ccStub,anchorId,JSON.parse(data));
+                case "appendAnchor":
+                    return await cc.appendAnchor(ccStub,anchorId,JSON.parse(data));
+                default:
+                    console.log('method not supported invoked : ', method);
+                    throw "Not supported";
+            }
+
         });
         anchoringContractStub.evaluateTransaction.callsFake( async (method, anchorId) => {
             const cc = require('../../cc-anchor/test/anchor');
@@ -27,15 +36,15 @@ describe('HLF-Adapter tests', () =>{
         });
     });
 
-    describe ('Add Anchor tests', () => {
-        it ('should add the first anchor', () =>{
+    describe ('Create Anchor tests', () => {
+        it ('should create the first anchor', () =>{
             req = reqProvider.getRequestAddAnchor1st();
             return new Promise( (resolve) => {
                 res.on('end', () => {
                     expect(res.statusCode).to.be.equal(200);
                     resolve();
                 });
-                require('../controllers/addAnchor').addAnchor(anchoringContractStub)(req,res);
+                require('../controllers/createAnchor').createAnchor(anchoringContractStub)(req,res);
             })
         });
 
@@ -48,7 +57,7 @@ describe('HLF-Adapter tests', () =>{
                     expect(json.length).to.be.equal(0);
                     resolve();
                 });
-                require('../controllers/getAnchorVersions').getAnchorVersions(anchoringContractStub)(req,res);
+                require('../controllers/getAllAnchorVersions').getAllAnchorVersions(anchoringContractStub)(req,res);
             })
         });
 
@@ -66,12 +75,12 @@ describe('HLF-Adapter tests', () =>{
                         expect(res.statusCode).to.be.equal(200);
                         const json = JSON.parse(res._getData());
                         expect(json.length).to.be.equal(1);
-                        expect(json[0]).to.be.equal("hl1");
+                        expect(json[0]).to.be.equal("2HqJt69J687TNyjNUZW2cPrkKxHNFbdsJxDcd21dvLEhaZd7KCA9QCA3TiAn8GvxfwhrPpEr4GXBaXTxdMtzQ7aha9kgqyuULm7nrzYcc2GgzRdtHuVuexm8k6HMVTHehkGtxCqAUkXhqXgRjVJtu1M77sfNnw3AcUxbRk41aoCzYd6XMBf55hYwxb34fh4MgTWwHmtzZzCMeqjS2Asw6ba1AXSRBJmAGbFxMkihPhkN3");
                         resolve();
                     });
-                    require('../controllers/getAnchorVersions').getAnchorVersions(anchoringContractStub)(req,res);
+                    require('../controllers/getAllAnchorVersions').getAllAnchorVersions(anchoringContractStub)(req,res);
                 });
-                require('../controllers/addAnchor').addAnchor(anchoringContractStub)(req,res);
+                require('../controllers/createAnchor').createAnchor(anchoringContractStub)(req,res);
             })
         });
 
@@ -90,9 +99,9 @@ describe('HLF-Adapter tests', () =>{
                         expect(res.statusCode).to.be.equal(200);
                         resolve();
                     });
-                    require('../controllers/addAnchor').addAnchor(anchoringContractStub)(req,res);
+                    require('../controllers/appendAnchor').appendAnchor(anchoringContractStub)(req,res);
                 });
-                require('../controllers/addAnchor').addAnchor(anchoringContractStub)(req,res);
+                require('../controllers/createAnchor').createAnchor(anchoringContractStub)(req,res);
             })
         });
 
@@ -103,9 +112,31 @@ describe('HLF-Adapter tests', () =>{
                     expect(res.statusCode).to.be.equal(200);
                     resolve();
                 });
-                require('../controllers/addAnchor').addAnchor(anchoringContractStub)(req,res);
+                require('../controllers/createAnchor').createAnchor(anchoringContractStub)(req,res);
             })
         });
 
+        it('should get the last hash link', () => {
+            req = reqProvider.getRequestAddAnchor1st();
+            return new Promise( (resolve) => {
+                res.on('end', () => {
+                    expect(res.statusCode).to.be.equal(200);
+                    //create 2nd request, response pair
+                    req = reqProvider.getRequestGetLastVersion();
+                    res = httpMocks.createResponse({
+                        eventEmitter: require('events').EventEmitter
+                    });
+                    res.on('end', () => {
+                        expect(res.statusCode).to.be.equal(200);
+                        const json = JSON.parse(res._getData());
+                        expect(json.length).to.be.equal(1);
+                        expect(json[0]).to.be.equal("2HqJt69J687TNyjNUZW2cPrkKxHNFbdsJxDcd21dvLEhaZd7KCA9QCA3TiAn8GvxfwhrPpEr4GXBaXTxdMtzQ7aha9kgqyuULm7nrzYcc2GgzRdtHuVuexm8k6HMVTHehkGtxCqAUkXhqXgRjVJtu1M77sfNnw3AcUxbRk41aoCzYd6XMBf55hYwxb34fh4MgTWwHmtzZzCMeqjS2Asw6ba1AXSRBJmAGbFxMkihPhkN3");
+                        resolve();
+                    });
+                    require('../controllers/getLastAnchorVersion').getLastAnchorVersion(anchoringContractStub)(req,res);
+                });
+                require('../controllers/createAnchor').createAnchor(anchoringContractStub)(req,res);
+            })
+        })
     })
 })

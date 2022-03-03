@@ -33,20 +33,40 @@ class AnchorChaincode extends shim.ChaincodeInterface {
                             console.error(err);
                             return shim.error(Buffer.from(err));
                         });
-            case "addAnchor":
-                const jsonData = JSON.parse(ret.params[1])
-                return this.addAnchor(stub,ret.params[0],jsonData)
+            case "createAnchor":
+                const createJsonData = JSON.parse(ret.params[1])
+                return this.createAnchor(stub,ret.params[0],createJsonData)
                     .then((data) =>{
-                            console.log('Finished invoking addAnchor ',ret.params[0],jsonData);
+                            console.log('Finished invoking createAnchor ',ret.params[0],createJsonData);
                             return shim.success(Buffer.from(data.toString()));
                         },
                         (err) =>{
                             return shim.error(Buffer.from(err.toString()));
                         });
-            case "getAnchorVersions":
-                return this.getAnchorVersions(stub,ret.params[0])
+            case "appendAnchor":
+                const appendJsonData = JSON.parse(ret.params[1])
+                return this.appendAnchor(stub,ret.params[0],appendJsonData)
                     .then((data) =>{
-                            console.log('Finished getAnchorVersions for ',ret.params[0]);
+                            console.log('Finished invoking appendAnchor ',ret.params[0],appendJsonData);
+                            return shim.success(Buffer.from(data.toString()));
+                        },
+                        (err) =>{
+                            return shim.error(Buffer.from(err.toString()));
+                        });
+
+            case "getAllVersions":
+                return this.getAllVersions(stub,ret.params[0])
+                    .then((data) =>{
+                            console.log('Finished getAllVersions for ',ret.params[0]);
+                            return shim.success(Buffer.from(data));
+                        },
+                        (err) =>{
+                            return shim.error(Buffer.from(err.toString()));
+                        });
+            case "getLastVersion":
+                return this.getLastVersion(stub,ret.params[0])
+                    .then((data) =>{
+                            console.log('Finished getLastVersion for ',ret.params[0]);
                             return shim.success(Buffer.from(data));
                         },
                         (err) =>{
@@ -64,13 +84,22 @@ class AnchorChaincode extends shim.ChaincodeInterface {
         return "Invoking check method.";
     }
 
-    async addAnchor(stub, anchorID, anchorData){
+    async createAnchor(stub, anchorID, anchorData){
         return await this.anchorOperations.addAnchor(stub, anchorID, anchorData);
     }
 
-    async getAnchorVersions(stub, anchorID){
-        return await this.anchorOperations.getAnchorVersions(stub, anchorID);
+    async appendAnchor(stub, anchorID, anchorData){
+        return await this.anchorOperations.appendAnchor(stub, anchorID, anchorData);
     }
+
+    async getAllVersions(stub, anchorID){
+        return await this.anchorOperations.getAllVersions(stub, anchorID);
+    }
+
+    async getLastVersion(stub, anchorID){
+        return await this.anchorOperations.getLastVersion(stub, anchorID);
+    }
+
 }
 
 module.exports = AnchorChaincode
