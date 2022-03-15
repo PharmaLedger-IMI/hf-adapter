@@ -26,6 +26,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      - run: npm run dev-install
+        working-directory: .
       - run: npm install
         working-directory: cc-anchor
       - run: npm test
