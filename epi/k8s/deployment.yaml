@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: epipoc.demo
+  name: epipoc.demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: epipoc.demo
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: epipoc.demo
+    spec:
+      containers:
+      - image: public.ecr.aws/n4q1q0z2/hf:epi.1.1
+        imagePullPolicy: "Always"
+        name: epi
+        ports:
+          - containerPort: 8080
+        volumeMounts:
+          - name: epi-external-volume
+            mountPath: /ePI-workspace/apihub-root/external-volume
+          - name: epi-config-volume
+            mountPath: /ePI-workspace/apihub-root/external-volume/config/apihub.json
+            subPath: apihub.json
+          - name: epi-bdns-config-volume
+            mountPath: /ePI-workspace/apihub-root/external-volume/config/bdns.hosts
+            subPath: bdns.hosts
+          - name: epi-config-volume
+            mountPath: /ePI-workspace/env.json
+            subPath: env.json
+          - name: epi-domains-volume
+            mountPath: /ePI-workspace/apihub-root/external-volume/config/domains/epipoc.json
+            subPath: epipoc.json
+          - name: epi-domains-volume
+            mountPath: /ePI-workspace/apihub-root/external-volume/config/domains/epipoc.demo.json
+            subPath: epipoc.demo.json
+          - name: epi-domains-volume
+            mountPath: /ePI-workspace/apihub-root/external-volume/config/domains/vault.demo.json
+            subPath: vault.demo.json
+          - name: epi-env-volume
+            mountPath: /ePI-workspace/trust-loader-config/demiurge-wallet/loader/environment.js
+            subPath: demiurge-environment.js
+          - name: epi-env-volume
+            mountPath: /ePI-workspace/trust-loader-config/dsu-explorer/loader/environment.js
+            subPath: dsu-explorer-environment.js
+          - name: epi-env-volume
+            mountPath: /ePI-workspace/trust-loader-config/dsu-fabric-wallet/loader/environment.js
+            subPath: dsu-fabric-environment.js
+          - name: epi-env-volume
+            mountPath: /ePI-workspace/trust-loader-config/leaflet-wallet/loader/environment.js
+            subPath: leaflet-environment.js
+      restartPolicy: Always
+      volumes:
+        - name: epi-config-volume
+          configMap:
+            name: epi-config
+        - name: epi-bdns-config-volume
+          configMap:
+            name: epi-bdns-config
+        - name: epi-domains-volume
+          configMap:
+            name: epi-domains-configmap
+        - name: epi-env-volume
+          configMap:
+            name: epi-environment
+        - name: epi-external-volume
+          persistentVolumeClaim:
+            claimName: epi-pvc-external-volume
+

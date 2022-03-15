@@ -22,3 +22,6 @@ kubectl get pv --no-headers=true | awk '/-rms/{print $1}'| xargs  kubectl delete
 
 # drop the adapter
 kubectl delete -f ./hlf-adapter/k8s/
+
+#drop blockchain explorer
+kubectl delete -f ./hlf-explorer/k8s

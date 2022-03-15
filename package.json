@@ -1,0 +1,19 @@
+{
+  "name": "hf-adapter",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev-install": "node ./bin/mkDevEnv.js && npm install",
+    "postinstall": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"npm run do-install\"",
+    "do-install": "node ./node_modules/octopus/scripts/ensureFreezeState.js && node ./node_modules/octopus/scripts/run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PharmaLedger-IMI/hf-adapter.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "octopus": "git+http://github.com/privatesky/octopus.git"
+  }
+}

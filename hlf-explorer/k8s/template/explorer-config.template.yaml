@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: explorer-config
+data:
+  connection-profile.json: |
+    {
+    	"name": "test-network",
+    	"version": "1.0.0",
+    	"client": {
+    		"tlsEnable": true,
+    		"adminCredential": {
+    			"id": "exploreradmin",
+    			"password": "exploreradminpw"
+    		},
+    		"enableAuthentication": true,
+    		"organization": "Rms",
+    		"connection": {
+    			"timeout": {
+    				"peer": {
+    					"endorser": "300"
+    				},
+    				"orderer": "300"
+    			}
+    		}
+    	},
+    	"channels": {
+    		"anchoring": {
+    			"peers": {
+    				"rms-peer1.rms.pharma.com": {}
+    			}
+    		}
+    	},
+    	"organizations": {
+    		"Rms": {
+    			"mspid": "RmsMSP",
+    			"adminPrivateKey": {
+    				"path": "/tmp/crypto/peerOrganizations/rms.pharma.com/users/Admin@rms.pharma.com/msp/keystore/admin-private-key"
+    			},
+    			"peers": ["rms-peer1.rms.pharma.com"],
+    			"signedCert": {
+    				"path": "/tmp/crypto/peerOrganizations/rms.pharma.com/users/Admin@rms.pharma.com/msp/signcerts/cert.pem"
+    			}
+    		}
+    	},
+    	"peers": {
+    		"rms-peer1.rms.pharma.com": {
+    			"tlsCACerts": {
+    				"path": "/tmp/crypto/peerOrganizations/rms.pharma.com/peers/rms-peer1.rms.pharma.com/tls/cacerts/rms-tls-ca.pem"
+    			},
+    			"url": "grpcs://rms-peer1:7051"
+    		}
+    	}
+    }
+
+
+  config.json: |
+    {
+    	"network-configs": {
+    		"test-network": {
+    			"name": "Test Network",
+    			"profile": "./connection-profile.json"
+    		}
+    	},
+    	"license": "Apache-2.0"
+    }
+
+  admin-private-key: |
+    ${admin-private-key}
+
+  cert-pem: |
+    ${cert-pem}
+
+  rms-tls-ca.pem: |
+    ${rms-tls-ca.pem}
+

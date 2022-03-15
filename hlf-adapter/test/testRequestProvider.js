@@ -1,147 +1,62 @@
 const httpMocks = require('node-mocks-http');
 
-function getRequestAddAnchor1st() {
+function getRequestAddAnchor(anchorId, signedhashlink) {
     return httpMocks.createRequest({
         method: 'PUT',
-        url: '/addAnchor',
+        url: '/createanchor',
         params: {
-            keySSI: "G73iPJmPoTkDygqyuRNP6G7Wd9wHjeSZqRaxGdCtgsiEeN9PudAs57nSG8eZhT1Btu5PjnmsZPoRPY5AmcckYC8sWTHaP"
+            keySSI: anchorId,
+            anchorValue: signedhashlink
         },
-        body:{
-            "hash": {
-                "newHashLinkSSI": "hl1",
-                "lastHashLinkSSI": null
-            },
-            "digitalProof": {
-                "signature": "iKx1CJLzw6zRqrHerujqMEpswHZB2LHyLmXRb6kHApCPgSt3zKxfi5YXXFBpnqBhnjDsrVjVm2ksRg1NYnuMvCfcw81gGBmqr6",
-                "publicKey": "PnzoCBTC5ToT29KvBJM2d1cP5C2CRijV2oDLdTNbNAQ3WHDN2x1QKtE4Bpdi6JtiKyCKCbR6Nq6ofJRhWqqHhiMD"
-            },
-            "zkp": ""
-        }
+        body:{}
     });
 }
 
-function getRequestAddAnchor2nd() {
+function getRequestAppendAnchor(anchorId, signedHashlink) {
     return httpMocks.createRequest({
         method: 'PUT',
-        url: '/addAnchor',
+        url: '/appendanchor',
         params: {
-            keySSI: "G73iPJmPoTkDygqyuRNP6G7Wd9wHjeSZqRaxGdCtgsiEeN9PudAs57nSG8eZhT1Btu5PjnmsZPoRPY5AmcckYC8sWTHaP"
+            keySSI: anchorId,
+            anchorValue: signedHashlink
         },
-        body:{
-            "hash": {
-                "newHashLinkSSI": "hl2",
-                "lastHashLinkSSI": "hl1"
-            },
-            "digitalProof": {
-                "signature": "iKx1CJLzw6zRqrHerujqMEpswHZB2LHyLmXRb6kHApCPgSt3zKxfi5YXXFBpnqBhnjDsrVjVm2ksRg1NYnuMvCfcw81gGBmqr6",
-                "publicKey": "PnzoCBTC5ToT29KvBJM2d1cP5C2CRijV2oDLdTNbNAQ3WHDN2x1QKtE4Bpdi6JtiKyCKCbR6Nq6ofJRhWqqHhiMD"
-            },
-            "zkp": ""
-        }
+        body:{}
     });
 }
 
-function getRequestAddAnchorUnSynced() {
-    return httpMocks.createRequest({
-        method: 'PUT',
-        url: '/addAnchor',
-        params: {
-            keySSI: "G73iPJmPoTkDygqyuRNP6G7Wd9wHjeSZqRaxGdCtgsiEeN9PudAs57nSG8eZhT1Btu5PjnmsZPoRPY5AmcckYC8sWTHaP"
-        },
-        body:{
-            "hash": {
-                "newHashLinkSSI": "hl9",
-                "lastHashLinkSSI": "hl8"
-            },
-            "digitalProof": {
-                "signature": "iKx1CJLzw6zRqrHerujqMEpswHZB2LHyLmXRb6kHApCPgSt3zKxfi5YXXFBpnqBhnjDsrVjVm2ksRg1NYnuMvCfcw81gGBmqr6",
-                "publicKey": "PnzoCBTC5ToT29KvBJM2d1cP5C2CRijV2oDLdTNbNAQ3WHDN2x1QKtE4Bpdi6JtiKyCKCbR6Nq6ofJRhWqqHhiMD"
-            },
-            "zkp": ""
-        }
-    });
-}
-function getRequestGetVersions() {
+function getRequestGetVersions(anchorId) {
     return httpMocks.createRequest({
         method: 'GET',
-        url: '/getAnchorVersions',
+        url: '/getallversions',
         params: {
-            keySSI: "G73iPJmPoTkDygqyuRNP6G7Wd9wHjeSZqRaxGdCtgsiEeN9PudAs57nSG8eZhT1Btu5PjnmsZPoRPY5AmcckYC8sWTHaP"
+            keySSI: anchorId
         }
     });
 }
 
-function getRequestAddAnchorWrongPubKey() {
+function getRequestGetLastVersion(anchorId) {
     return httpMocks.createRequest({
-        method: 'PUT',
-        url: '/addAnchor',
+        method: 'GET',
+        url: '/getlastversion',
         params: {
-            keySSI: "G73iPJmPoTkDygqyuRNP6G7Wd9wHjeSZqRaxGdCtgsiEeN9PudAs57nSG8eZhT1Btu5PjnmsZPoRPY5AmcckYC8sWTHaP"
-        },
-        body:{
-            "hash": {
-                "newHashLinkSSI": "hl1",
-                "lastHashLinkSSI": null
-            },
-            "digitalProof": {
-                "signature": "iKx1CJLzw6zRqrHerujqMEpswHZB2LHyLmXRb6kHApCPgSt3zKxfi5YXXFBpnqBhnjDsrVjVm2ksRg1NYnuMvCfcw81gGBmqr6",
-                "publicKey": "DxPnzoCBTC5ToT29KvBJM2d1cP5C2CRijV2oDLdTNbNAQ3WHDN2x1QKtE4Bpdi6JtiKyCKCbR6Nq6ofJRhWqqHhiMD"
-            },
-            "zkp": ""
+            keySSI: anchorId
         }
     });
 }
 
-
-function getRequestAddAnchorConst() {
+function getNoOfAnchors() {
     return httpMocks.createRequest({
-        method: 'PUT',
-        url: '/addAnchor',
-        params: {
-            keySSI: "BXSxxiosnXKwmcxLwygQZzvswkfgBMyUK"
-        },
-        body:{
-            "hash": {
-                "newHashLinkSSI": "hl1",
-                "lastHashLinkSSI": null
-            },
-            "digitalProof": {
-                "signature": "iKx1CJLzw6zRqrHerujqMEpswHZB2LHyLmXRb6kHApCPgSt3zKxfi5YXXFBpnqBhnjDsrVjVm2ksRg1NYnuMvCfcw81gGBmqr6",
-                "publicKey": ""
-            },
-            "zkp": ""
-        }
-    });
-}
-
-function getRequestAddAnchorConst2nd() {
-    return httpMocks.createRequest({
-        method: 'PUT',
-        url: '/addAnchor',
-        params: {
-            keySSI: "BXSxxiosnXKwmcxLwygQZzvswkfgBMyUK"
-        },
-        body:{
-            "hash": {
-                "newHashLinkSSI": "hl2",
-                "lastHashLinkSSI": "hl1"
-            },
-            "digitalProof": {
-                "signature": "iKx1CJLzw6zRqrHerujqMEpswHZB2LHyLmXRb6kHApCPgSt3zKxfi5YXXFBpnqBhnjDsrVjVm2ksRg1NYnuMvCfcw81gGBmqr6",
-                "publicKey": ""
-            },
-            "zkp": ""
-        }
+        method: 'GET',
+        url: '/totalNumberOfAnchors',
+        params: {},
+        body:{}
     });
 }
 
 module.exports = {
-    getRequestAddAnchor1st,
-    getRequestAddAnchor2nd,
-    getRequestAddAnchorUnSynced,
-    getRequestAddAnchorWrongPubKey,
-    getRequestAddAnchorConst,
-    getRequestAddAnchorConst2nd,
-    getRequestGetVersions
+    getRequestAddAnchor,
+    getRequestAppendAnchor,
+    getRequestGetVersions,
+    getRequestGetLastVersion,
+    getNoOfAnchors
 }

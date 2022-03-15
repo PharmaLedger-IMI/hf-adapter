@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: epi-domains-configmap
+data:
+  epipoc.json: |-
+    {
+      "anchoring": {
+        "type": "ETH",
+        "option": {
+          "endpoint": "http://hlf-adapter-service:3000"
+        }
+      },
+      "messagesEndpoint": "http://localhost:8080/mappingEngine/epipoc/epipoc.demo/saveResult",
+      "enable": ["mq", "enclave"]
+    }
+
+  epipoc.demo.json: |-
+    {
+      "anchoring": {
+        "type": "ETH",
+        "option": {
+          "endpoint": "http://hlf-adapter-service:3000"
+        }
+      },
+      "enable": ["mq", "enclave"]
+    }
+
+
+
+  vault.demo.json: |-
+    {
+      "anchoring": {
+        "type": "FS",
+         "option": {
+           "enableBricksLedger": false
+         }
+      },
+      "enable": ["mq", "enclave"]
+    }

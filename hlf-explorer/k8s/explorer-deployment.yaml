@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: explorer-mynetwork-com
+  name: explorer-mynetwork-com
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: explorer-mynetwork-com
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: explorer-mynetwork-com
+    spec:
+      containers:
+        - env:
+            - name: DATABASE_DATABASE
+              value: fabricexplorer
+            - name: DATABASE_HOST
+              value: explorerdb-mynetwork-com
+            - name: DATABASE_PASSWD
+              value: password
+            - name: DATABASE_USERNAME
+              value: hppoc
+            - name: DISCOVERY_AS_LOCALHOST
+              value: "false"
+            - name: LOG_CONSOLE_STDOUT
+              value: "true"
+            - name: LOG_LEVEL_APP
+              value: info
+            - name: LOG_LEVEL_CONSOLE
+              value: debug
+            - name: LOG_LEVEL_DB
+              value: info
+          image: hyperledger/explorer:latest
+          name: explorer-mynetwork-com
+          ports:
+            - containerPort: 8080
+          resources: {}
+          volumeMounts:
+            - mountPath: /opt/explorer/app/platform/fabric/config.json
+              name: config-json
+              subPath: config.json
+            - mountPath: /opt/explorer/app/platform/fabric/connection-profile.json
+              name: connection-profile
+              subPath: connection-profile.json
+            - mountPath: /opt/explorer/wallet
+              name: walletstore
+            - mountPath: /tmp/crypto/peerOrganizations/rms.pharma.com/users/Admin@rms.pharma.com/msp/keystore/admin-private-key
+              name: admin-private-key
+              subPath: admin-private-key
+            - mountPath: /tmp/crypto/peerOrganizations/rms.pharma.com/users/Admin@rms.pharma.com/msp/signcerts/cert.pem
+              name: cert-pem
+              subPath: cert-pem
+            - mountPath: /tmp/crypto/peerOrganizations/rms.pharma.com/peers/rms-peer1.rms.pharma.com/tls/cacerts/rms-tls-ca.pem
+              name: rms-tls-ca
+              subPath: rms-tls-ca.pem
+      hostname: explorer-mynetwork-com
+      restartPolicy: Always
+      volumes:
+        - name: admin-private-key
+          configMap:
+            name: explorer-config
+        - name: cert-pem
+          configMap:
+            name: explorer-config
+        - name: rms-tls-ca
+          configMap:
+            name: explorer-config
+        - name: config-json
+          configMap:
+            name: explorer-config
+        - name: connection-profile
+          configMap:
+            name: explorer-config
+        - name: walletstore
+          persistentVolumeClaim:
+            claimName: walletstore
+

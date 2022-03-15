@@ -62,7 +62,7 @@ spec:
       # load the external chaincode builder into the peer image prior to peer launch.
       initContainers:
         - name: fabric-ccs-builder
-          image: public.ecr.aws/n4q1q0z2/iot:fabric-ccs-build.1.0
+          image: public.ecr.aws/n4q1q0z2/hf:fabric-ccs-build.1.0
           imagePullPolicy: IfNotPresent
           command: [sh, -c]
           args: ["cp /go/bin/* /var/hyperledger/fabric/chaincode/ccs-builder/bin/"]
