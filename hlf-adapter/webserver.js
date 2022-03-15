@@ -43,26 +43,44 @@ function configureHeaders(webServer) {
 
 function configureCreateAnchorEntryPoints(webServer, anchoringContract) {
     const createAnchorHandler = require("./controllers/createAnchor").createAnchor(anchoringContract);
-    webServer.use("/create-anchor/*", requestBodyJSONMiddleware);
-    webServer.put("/create-anchor/:keySSI", createAnchorHandler);
+    webServer.use("/createanchor/*", requestBodyJSONMiddleware);
+    webServer.put("/createanchor/:keySSI/:anchorValue", createAnchorHandler);
 }
 
 function configureAppendAnchorEntryPoints(webServer, anchoringContract) {
     const appendAnchorHandler = require("./controllers/appendAnchor").appendAnchor(anchoringContract);
-    webServer.use("/append-to-anchor/*", requestBodyJSONMiddleware);
-    webServer.put("/append-to-anchor/:keySSI", appendAnchorHandler);
+    webServer.use("/appendanchor/*", requestBodyJSONMiddleware);
+    webServer.put("/appendanchor/:keySSI/:anchorValue", appendAnchorHandler);
+}
+
+function configureCreateOrAppendMultipleAnchorsEntryPoints(webServer, anchoringContract) {
+    const createOrAppendMultipleAnchorsHandler = require("./controllers/createOrAppendMultipleAnchors").createOrAppendMultipleAnchors(anchoringContract);
+    webServer.use("/createOrAppendMultipleAnchors/*", requestBodyJSONMiddleware);
+    webServer.put("/createOrAppendMultipleAnchors/*", createOrAppendMultipleAnchorsHandler);
+}
+
+function configureTotalNumberOfAnchorsEntryPoints(webServer, anchoringContract) {
+    const totalNumberOfAnchorsHandler = require("./controllers/totalNumberOfAnchors").totalNumberOfAnchors(anchoringContract);
+    webServer.use("/totalNumberOfAnchors/*", requestBodyJSONMiddleware);
+    webServer.get("/totalNumberOfAnchors/*", totalNumberOfAnchorsHandler);
+}
+
+function configureDumpAnchorsPoints(webServer, anchoringContract) {
+    const dumpAnchorsHandler = require("./controllers/dumpAnchors").dumpAnchors(anchoringContract);
+    webServer.use("/dumpAnchors/*", requestBodyJSONMiddleware);
+    webServer.get("/dumpAnchors/*", dumpAnchorsHandler);
 }
 
 function configureGetAllVersionsEntryPoints(webServer, anchoringContract) {
     const getAllVersionsHandler = require("./controllers/getAllAnchorVersions").getAllAnchorVersions(anchoringContract);
-    webServer.use("/get-all-versions/*", requestBodyJSONMiddleware);
-    webServer.get("/get-all-versions/:keySSI", getAllVersionsHandler);
+    webServer.use("/getAllVersions/*", requestBodyJSONMiddleware);
+    webServer.get("/getAllVersions/:keySSI", getAllVersionsHandler);
 }
 
 function configureGetLastVersionEntryPoints(webServer, anchoringContract) {
     const getLastVersionHandler = require("./controllers/getLastAnchorVersion").getLastAnchorVersion(anchoringContract);
-    webServer.use("/get-last-version/*", requestBodyJSONMiddleware);
-    webServer.get("/get-last-version/:keySSI", getLastVersionHandler);
+    webServer.use("/getLastVersion/*", requestBodyJSONMiddleware);
+    webServer.get("/getLastVersion/:keySSI", getLastVersionHandler);
 }
 
 function configureCheckEntryPoints(webServer, anchoringContract) {
@@ -80,6 +98,9 @@ function startServer(anchoringContract){
     configureAppendAnchorEntryPoints(this.webServer, anchoringContract);
     configureGetAllVersionsEntryPoints(this.webServer, anchoringContract);
     configureGetLastVersionEntryPoints(this.webServer, anchoringContract);
+    configureCreateOrAppendMultipleAnchorsEntryPoints(this.webServer, anchoringContract);
+    configureTotalNumberOfAnchorsEntryPoints(this.webServer, anchoringContract);
+    configureDumpAnchorsPoints(this.webServer, anchoringContract);
     configureCheckEntryPoints(this.webServer, anchoringContract);
     this.webServer.listen(port);
     console.log('Server started. Listening on ', port);

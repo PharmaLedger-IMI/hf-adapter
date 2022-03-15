@@ -1,11 +1,18 @@
 FROM node:12
 
-
+RUN mkdir cc-home
+WORKDIR cc-home
+RUN mkdir bin
+COPY ./package.json .
+COPY ./env.json .
+COPY ./octopus.json .
+COPY ./bin/mkDevEnv.js ./bin/mkDevEnv.js
+RUN npm run dev-install --unsafe-perm
 
 ENV TARGET_FOLDER_NAME="cc-anchor"
 RUN mkdir -p $TARGET_FOLDER_NAME
-WORKDIR $TARGET_FOLDER_NAME
-COPY . .
+WORKDIR /cc-home/$TARGET_FOLDER_NAME
+COPY ./cc-anchor/ .
 RUN npm install --unsafe-perm --production
 
 

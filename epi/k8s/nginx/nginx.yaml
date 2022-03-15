@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - name: nginx-encrypt
+              mountPath: /etc/letsencrypt
+            - name: nginx-configd-files
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          # HTTP Health Check
+          livenessProbe:
+            httpGet:
+              port: 80
+              path: /
+      volumes:
+       - name: nginx-configd-files
+         configMap:
+           name: nginx-config
+       - name: nginx-encrypt
+         persistentVolumeClaim:
+            claimName: nginx-pvc-letsencrypt
+

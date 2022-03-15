@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: explorerdb-mynetwork-com
+  name: explorerdb-mynetwork-com
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: explorerdb-mynetwork-com
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: explorerdb-mynetwork-com
+    spec:
+      containers:
+        - env:
+            - name: DATABASE_DATABASE
+              value: fabricexplorer
+            - name: DATABASE_PASSWORD
+              value: password
+            - name: DATABASE_USERNAME
+              value: hppoc
+          image: hyperledger/explorer-db:latest
+          name: explorerdb-mynetwork-com
+          ports:
+            - containerPort: 5432
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: pgdata
+              subPath: postgres
+      hostname: explorerdb-mynetwork-com
+      restartPolicy: Always
+      volumes:
+        - name: pgdata
+          persistentVolumeClaim:
+            claimName: pgdata
+

@@ -4,6 +4,7 @@ function getAllAnchorVersions(anchoringContract){
         console.log('Serving GET /get-all-versions for ', anchorID);
         require('../anchoring/getAllAnchorVersions').getAllAnchorVersions(anchoringContract, anchorID).then(
             (data) => {
+                console.log('data received : ', data);
                 res.status(200).end(data);
             },
             (err) => {

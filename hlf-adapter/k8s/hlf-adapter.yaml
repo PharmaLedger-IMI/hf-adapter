@@ -1,5 +1,3 @@
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,26 +14,10 @@ spec:
     spec:
       containers:
         - name: app
-          image: public.ecr.aws/n4q1q0z2/iot:app.0.1
+          image: public.ecr.aws/n4q1q0z2/hf:hf-adapter.0.24
           imagePullPolicy: Always
           resources:
             requests:
               memory: "50Mi"
               cpu: "0.1"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: hlf-adapter-service
-  labels:
-    name: hlf-adapter-service
 
-spec:
-  selector:
-    app: hlf-adapter
-
-  ports:
-    - port: 3000
-      targetPort: 3000
-
-  type: LoadBalancer

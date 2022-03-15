@@ -3,7 +3,7 @@ async function createAnchor(contract, keySSI, anchorData ){
 
     const sendData = JSON.stringify(anchorData);
     const result = await contract.submitTransaction("createAnchor",keySSI, sendData);
-    console.log(`*** createAnchor Result: ${result.toString()}`);
+    console.log('*** createAnchor Result: ', result, result.toString());
     return result.toString();
 }
 

@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: epi-bdns-config
+data:
+  bdns.hosts: |-
+    {
+      "epipoc" : {
+        "anchoringServices": [
+          "$ORIGIN"
+        ],
+        "notifications": [
+          "$ORIGIN"
+        ]
+      },
+      "epipoc.demo" : {
+           "brickStorages": [
+                "$ORIGIN"
+          ],
+          "anchoringServices": [
+            "$ORIGIN"
+          ],
+          "notifications": [
+            "$ORIGIN"
+          ]
+      },
+      "vault.demo" : {
+        "replicas": [],
+        "brickStorages": [
+          "$ORIGIN"
+        ],
+        "anchoringServices": [
+          "$ORIGIN"
+        ],
+        "notifications": [
+          "$ORIGIN"
+        ]
+      }
+    }

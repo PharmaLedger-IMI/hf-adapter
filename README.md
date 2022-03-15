@@ -26,10 +26,13 @@
 ```shell
 ./scripts/deploy-hlf-adapter.sh
 ```
-## Clean-up
+
+3. Continue with ePI deployment : [Deployment steps](./epi/readme.md)
+
+## Clean-up blockchain network
 ```shell
 ./scripts/drop-network.sh
 ```
 ## External
 
-1. [Hyperledger fabric documentation](https://hyperledger-fabric.readthedocs.io/en/release-2.3/whatis.html#hyperledger-fabric)
+1. [Hyperledger fabric documentation 2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3/whatis.html#hyperledger-fabric)

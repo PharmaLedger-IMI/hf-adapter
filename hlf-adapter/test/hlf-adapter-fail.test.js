@@ -15,17 +15,21 @@ describe('HLF-Adapter fail check tests', () =>{
     beforeEach(() => {
         anchoringContractStub = sinon.createStubInstance(ContractImpl);
         ccStub = require('../../cc-anchor/test/chaincodeStub')();
+        const AnchorCC = require('../../cc-anchor/lib/controller/AnchorChaincode')
         anchoringContractStub.submitTransaction.callsFake( async (method,anchorId, data) => {
-            const cc = require('../../cc-anchor/test/anchor');
-            switch(method){
-                case "createAnchor":
-                    return await cc.addAnchor(ccStub,anchorId,JSON.parse(data));
-                case "appendAnchor":
-                    return await cc.appendAnchor(ccStub,anchorId,JSON.parse(data));
-                default:
-                    console.log('method not supported invoked : ', method);
-                    throw "Not supported";
-            }
+            ccStub.InitAdapter(method,anchorId,data);
+
+            let anchorCC = new AnchorCC();
+            const info =  await anchorCC.Invoke(ccStub);
+            return info.payload;
+
+        });
+        anchoringContractStub.evaluateTransaction.callsFake( async (method, anchorId) => {
+            ccStub.InitAdapter(method,anchorId);
+
+            let anchorCC = new AnchorCC();
+            const info =  await anchorCC.Invoke(ccStub);
+            return info.payload;
         });
         res = httpMocks.createResponse({
             eventEmitter: require('events').EventEmitter
@@ -33,31 +37,40 @@ describe('HLF-Adapter fail check tests', () =>{
     });
 
     describe ('Add Anchor fail check tests', () => {
-        it ('should fail to add anchor with wrong public key', () =>{
-            req = reqProvider.getRequestAddAnchorWrongPubKey();
+        it ('should fail to add anchor with wrong public key', async () =>{
+            const ssiUtils = require('./utils-opendsu');
+            const seedSSI = ssiUtils.generateSeedSSI();
+            const anchorId = ssiUtils.getAnchorId(seedSSI);
+            const signedHashLink = await ssiUtils.getSignedHashLink(seedSSI);
+            const seedSSI2 = ssiUtils.generateSeedSSI();
+            const anchorId2 = ssiUtils.getAnchorId(seedSSI2);
+            req = reqProvider.getRequestAddAnchor(anchorId2, signedHashLink);
             return new Promise( (resolve) => {
                 res.on('end', () => {
-                    expect(res.statusCode).to.be.equal(428);
-                    expect(res._getData()).to.be.equal('103')
+                    expect(res.statusCode).to.be.equal(500);
                     resolve();
                 });
                 require('../controllers/createAnchor').createAnchor(anchoringContractStub)(req,res);
             })
         });
 
-        it (' should fail to replay create anchor calls', () => {
-            req = reqProvider.getRequestAddAnchor1st();
+        it (' should fail to replay create anchor calls', async () => {
+            const ssiUtils = require('./utils-opendsu');
+            const seedSSI = ssiUtils.generateSeedSSI();
+            const anchorId = ssiUtils.getAnchorId(seedSSI);
+            const signedHashLink = await ssiUtils.getSignedHashLink(seedSSI);
+            req = reqProvider.getRequestAddAnchor(anchorId, signedHashLink);
             return new Promise( (resolve) => {
 
                 res.on('end', () => {
                     expect(res.statusCode).to.be.equal(200);
                     //create 2nd request, response pair
-                    req = reqProvider.getRequestAddAnchor1st();
+                    req = reqProvider.getRequestAddAnchor(anchorId, signedHashLink);
                     res = httpMocks.createResponse({
                         eventEmitter: require('events').EventEmitter
                     });
                     res.on('end', () => {
-                        expect(res.statusCode).to.be.equal(428);
+                        expect(res.statusCode).to.be.equal(500);
                         resolve();
                     });
                     require('../controllers/createAnchor').createAnchor(anchoringContractStub)(req,res);
@@ -66,20 +79,25 @@ describe('HLF-Adapter fail check tests', () =>{
             })
         })
 
-        it ('should fail to add new un synced hashlink for existing anchor', () =>{
-            req = reqProvider.getRequestAddAnchor1st();
+        it ('should fail to add new un synced hashlink for existing anchor', async () =>{
+            const ssiUtils = require('./utils-opendsu');
+            const seedSSI = ssiUtils.generateSeedSSI();
+            const anchorId = ssiUtils.getAnchorId(seedSSI);
+            const signedHashLink = await ssiUtils.getSignedHashLink(seedSSI);
+            const signedHashLink2nd = await ssiUtils.getSignedHashLink(seedSSI,signedHashLink);
+            const signedHashLink3rd = await ssiUtils.getSignedHashLink(seedSSI,signedHashLink2nd);
+            req = reqProvider.getRequestAddAnchor(anchorId, signedHashLink);
             return new Promise( (resolve) => {
 
                 res.on('end', () => {
                     expect(res.statusCode).to.be.equal(200);
                     //create 2nd request, response pair
-                    req = reqProvider.getRequestAddAnchorUnSynced();
+                    req = reqProvider.getRequestAppendAnchor(anchorId, signedHashLink3rd);
                     res = httpMocks.createResponse({
                         eventEmitter: require('events').EventEmitter
                     });
                     res.on('end', () => {
-                        expect(res.statusCode).to.be.equal(428);
-                        expect(res._getData()).to.be.equal('103');
+                        expect(res.statusCode).to.be.equal(500);
                         resolve();
                     });
                     require('../controllers/appendAnchor').appendAnchor(anchoringContractStub)(req,res);
@@ -89,18 +107,22 @@ describe('HLF-Adapter fail check tests', () =>{
         });
 
         it ('should fail to add const anchor new hashlink', () => {
-            req = reqProvider.getRequestAddAnchorConst();
+            const ssiUtils = require('./utils-opendsu');
+            const constSSI = ssiUtils.generateConstSSI();
+            const anchorId = ssiUtils.getAnchorId(constSSI);
+            const hashlink = ssiUtils.getHashLink(constSSI);
+            const hashlink2 = ssiUtils.getHashLink(constSSI,'some data 2 hash');
+            req = reqProvider.getRequestAddAnchor(anchorId, hashlink);
             return new Promise( (resolve) => {
                 res.on('end', () =>{
                     expect(res.statusCode).to.be.equal(200);
                     //create 2nd request, response pair
-                    req = reqProvider.getRequestAddAnchorConst2nd();
+                    req = reqProvider.getRequestAppendAnchor(anchorId, hashlink2);
                     res = httpMocks.createResponse({
                         eventEmitter: require('events').EventEmitter
                     });
                     res.on('end', () => {
-                        expect(res.statusCode).to.be.equal(428);
-                        expect(res._getData()).to.be.equal('101');
+                        expect(res.statusCode).to.be.equal(500);
                         resolve();
                     });
                     require('../controllers/appendAnchor').appendAnchor(anchoringContractStub)(req,res);

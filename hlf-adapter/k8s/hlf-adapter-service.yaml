@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hlf-adapter-service
+  labels:
+    name: hlf-adapter-service
+
+spec:
+  selector:
+    app: hlf-adapter
+
+  ports:
+    - port: 3000
+      targetPort: 3000
+
+  type: LoadBalancer
