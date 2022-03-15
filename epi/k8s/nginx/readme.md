@@ -10,7 +10,7 @@ If you use an EC2 instance, see https://www.nginx.com/blog/using-free-ssltls-cer
 
 1. Deploy the nginx-service
 ```shell
-kubectl apply -f ./epi/k8s/nginx/nginx-service.yaml
+kubectl apply -f ./epi/k8s/nginx/service/nginx-service.yaml
 ```
 2. Configure DNS to point to your nginx endpoint
 3. Execute
@@ -24,8 +24,9 @@ apt-get update
 apt-get install certbot
 apt-get install python3-certbot-nginx
 apt-get install nano
-nano /etc/nginx/conf.d/**_<your-dns (eg. epi.nvs.dev)>.conf_** with the content from below
-certbot --nginx -d <your-dns> and fill the command requirements. If successfull, the pod will restart.
+nano /etc/nginx/conf.d/hlf.pharmaledger.dev.conf
+certbot --nginx -d hlf.pharmaledger.dev
+and fill the command requirements. If successfull, the pod will restart.
 ```
 Nginx configuration:
 ```json
@@ -33,9 +34,10 @@ Nginx configuration:
         listen 80 default_server;
         listen [::]:80 default_server;
         root /var/www/html;
-        server_name <your-dns>;
+        server_name hlf.pharmaledger.dev;
     }
 ```
+Certificates are saved at : /etc/letsencrypt/live/hlf.pharmaledger.dev/privkey.pem
 5. Destroy the nginx pod
 ```shell
 kubectl delete deploy nginx

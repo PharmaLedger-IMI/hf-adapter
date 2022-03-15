@@ -5,11 +5,11 @@ metadata:
     io.kompose.service: explorer-mynetwork-com
   name: explorer-mynetwork-com
 spec:
+  type: LoadBalancer
   ports:
     - name: "8080"
-      port: 8080
+      port: 80
       targetPort: 8080
   selector:
     io.kompose.service: explorer-mynetwork-com
-status:
-  loadBalancer: {}
+

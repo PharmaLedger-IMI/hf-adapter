@@ -88,7 +88,7 @@ class AnchorChaincode extends shim.ChaincodeInterface {
                     }
                     const dumpAnchors = []
                     for(let i = from; i < to;i++){
-                        const anchorId = await $$.promisify(hlfPersistence.getAnchorIdOnIndex)(i);
+                        const anchorId = await $$.promisify(hlfPersistence.getAnchorIdOnIndex)(i.toString());
                         const allVersions = await $$.promisify(hlfPersistence.getAllVersions)(anchorId);
                         dumpAnchors.push({
                             anchorId: anchorId,

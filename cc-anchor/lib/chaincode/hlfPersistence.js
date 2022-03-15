@@ -139,7 +139,7 @@ function ChainCodeOperations(){
             ccPersistence.putState("NoOfAnchors", Buffer.from(jsonStr)).then(
                 ()=>{
                     const currentAnchorIndex = currentAnchorCount-1;
-                    ccPersistence.putState(currentAnchorIndex, Buffer.from(JSON.stringify({
+                    ccPersistence.putState(currentAnchorIndex.toString(), Buffer.from(JSON.stringify({
                         anchorId: anchorId
                     }))).then(
                         ()=>{

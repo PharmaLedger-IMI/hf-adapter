@@ -46,13 +46,17 @@ data:
           }
       }
       server {
-              server_name epidemo.pharmaledger.dev;
+              server_name hlf.pharmaledger.dev;
           root         /usr/share/nginx/html;
           # Load configuration files for the default server block.
           include /etc/nginx/default.d/*.conf;
           location / {
                   proxy_pass http://epipoc:80/;
           }
+          location /explorer {
+                  return 301 http://a1b6ffa49fa5d44c9be2494f248d0c1e-1313276954.eu-central-1.elb.amazonaws.com/;
+          }
+
           error_page 404 /404.html;
               location = /40x.html {
           }
@@ -61,16 +65,16 @@ data:
           }
           listen [::]:443 ssl ipv6only=on;
           listen 443 ssl;
-          ssl_certificate /etc/letsencrypt/live/epidemo.pharmaledger.dev/fullchain.pem;
-          ssl_certificate_key /etc/letsencrypt/live/epidemo.pharmaledger.dev/privkey.pem;
+          ssl_certificate /etc/letsencrypt/live/hlf.pharmaledger.dev/fullchain.pem;
+          ssl_certificate_key /etc/letsencrypt/live/hlf.pharmaledger.dev/privkey.pem;
       }
       server {
-              if ($host = epidemo.pharmaledger.dev) {
+              if ($host = hlf.pharmaledger.dev) {
                   return 301 https://$host$request_uri;
               }
               listen       80 ;
               listen       [::]:80 ;
-              server_name epidemo.pharmaledger.dev;
+              server_name hlf.pharmaledger.dev;
               return 404;
       }
     }
