@@ -206,13 +206,16 @@ function ChainCodeOperations(){
         });
         ccPersistence.putState(anchorId, Buffer.from(jsonStr)).then(
             ()=>{
-                self.incrementTotalNumberOfAnchors(anchorId, ccPersistence,(err) =>{
-                    if (err){
-                        console.log(err);
-                        return callback(err);
-                    }
-                    return callback(undefined);
-                });
+                // workaround issue MVCC_READ_CONFLICT on concurrent createAnchor calls
+                // https://github.com/PharmaLedger-IMI/blockchain-hf-workspace/issues/3 
+                // self.incrementTotalNumberOfAnchors(anchorId, ccPersistence,(err) =>{
+                //     if (err){
+                //         console.log(err);
+                //         return callback(err);
+                //     }
+                //     return callback(undefined);
+                // });
+                return callback(undefined);
             },
             (err)=>{
                 console.log(err);
